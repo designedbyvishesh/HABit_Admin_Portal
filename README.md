@@ -1,8 +1,4 @@
-# 🏛️ IIT Guwahati - Hostel Affairs Board (HABit) Admin Portal
-
-[![Live Demo](https://img.shields.io/badge/Live_Demo-GitHub_Pages-2563eb?style=for-the-badge&logo=github)](https://designedbyvishesh.github.io/HABit_Admin_Portal/)
-[![IIT Guwahati](https://img.shields.io/badge/IIT_Guwahati-Hostel_Affairs_Board-4C4EDB?style=for-the-badge)](https://designedbyvishesh.github.io/HABit_Admin_Portal/)
-[![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)]()
+# IIT Guwahati - Hostel Affairs Board (HABit) Admin Portal
 
 An intuitive and comprehensive administration portal for managing hostel operations, catering services, student directory, room allocations, gala dinner scans, and boarder communications at **Indian Institute of Technology Guwahati (IIT Guwahati)**.
 
