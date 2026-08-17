@@ -1,3 +1,4 @@
 node_modules/
 package-lock.json
 capture_screenshots.js
+package.json
