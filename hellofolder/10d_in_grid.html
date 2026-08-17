@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10d</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto:wght@400;500;700&family=Tangerine&display=swap" rel="stylesheet">
+    <Style>
+        .col{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            column-gap: 12px;
+            row-gap: 12px;
+        }
+        .profile{
+            row-gap: 4px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        .img{
+            width: 100%;
+        }
+        .content{
+            margin-left: 6px;
+            margin-bottom: 6px;
+        }
+        p{
+            margin-bottom: 0px;
+            margin-top: 0px;
+            font-family: roboto;
+            font-size: 12px;
+            color: rgb(75, 75, 75);
+        }
+        .name{
+            font-weight: 700;
+            font-size: 16px;
+            color: black;
+        }
+        .connect{
+            display: grid;
+            grid-template-columns: 24px 1fr;
+            align-items: center;
+            column-gap: 4px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+        .img2{
+            width: 24px;
+            height: 24px;
+            object-fit: cover;
+            border-radius: 100%;
+        }
+        .add_button{
+            color: white;
+            background-color: rgb(69, 140, 255);
+            border: none;
+            border-radius: 2px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+    </Style>
+</head>
+<body>
+    <div class="col">
+        <div class="profile">
+            <div class="img_div">
+                <img class="img" src="mindblow.jpeg">
+            </div>
+            <div class="content">
+                <p class="name">Oliver</p>
+                <div class="connect">
+                    <img class="img2" src="mindblow.jpeg">
+                    <p>2 mutual friends</p>
+                </div>
+                <button class="add_button">Add Friend</button>
+            </div>
+        </div>
+        <div class="profile">
+            <div class="img_div">
+                <img class="img" src="mindblow.jpeg">
+            </div>
+            <div class="content">
+                <p class="name">Oliver</p>
+                <div class="connect">
+                    <img class="img2" src="mindblow.jpeg">
+                    <p>2 mutual friends</p>
+                </div>
+                <button class="add_button">Add Friend</button>
+            </div>
+        </div>
+        <div class="profile">
+            <div class="img_div">
+                <img class="img" src="mindblow.jpeg">
+            </div>
+            <div class="content">
+                <p class="name">Oliver</p>
+                <div class="connect">
+                    <img class="img2" src="mindblow.jpeg">
+                    <p>2 mutual friends</p>
+                </div>
+                <button class="add_button">Add Friend</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+       p{
+        font-family: Montserrat;
+        }
+        .New{
+            font-size: 48px;
+            margin-bottom: 0px;
+            margin-top: 0px;
+        }
+        .USD{
+            font-size: 16px;
+            /* font-weight: ; */
+            color: gray;
+        }
+        .inc{
+            color: green;
+            margin-bottom: 0px;
+            margin-top: 0px;
+        }
+        .change{
+            /* font-weight: ; */
+            color: gray;
+            margin-bottom: 0px;
+            margin-top: 0px;
+        }
+        .loss{
+            /* font-weight: ; */
+            color: red;
+        }

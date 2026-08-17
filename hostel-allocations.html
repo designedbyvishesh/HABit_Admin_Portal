@@ -1,0 +1,4187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIT Guwahati - Hostel Affairs Board</title>
+    <meta name="description" content="IIT Guwahati Hostel Affairs Board - Manage hostels, caterers, students, and allocations">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            min-height: 100vh;
+            color: #1f2937;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 20px 16px 16px;
+        }
+
+        .hamburger {
+            font-size: 20px;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .sidebar-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1.2;
+        }
+
+        .sidebar-subtitle {
+            font-size: 11px;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        .sidebar-drawer-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            color: #374151;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .nav-item:hover {
+            background: #f3f4f6;
+        }
+
+        .nav-item.active {
+            background: #e8e8fa;
+            color: #4C4EDB;
+            font-weight: 600;
+        }
+
+        .nav-item .icon {
+            width: 18px;
+            text-align: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .icon {
+            color: #4C4EDB;
+        }
+
+        .sidebar-footer {
+            padding: 12px 16px 16px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 9px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fff;
+            color: #ef4444;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 14px;
+            transition: background 0.15s;
+        }
+
+        .logout-btn:hover {
+            background: #fef2f2;
+        }
+
+        .footer-text {
+            font-size: 11px;
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+
+        /* ── Main Content ── */
+        .main {
+            margin-left: 220px;
+            flex: 1;
+            padding: 28px 36px;
+            min-height: 100vh;
+        }
+
+        /* ── Page Sections ── */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* ── Shared Styles ── */
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 14px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #fafafa;
+        }
+
+        tbody td {
+            padding: 14px 24px;
+            font-size: 13.5px;
+            color: #374151;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .btn-primary {
+            padding: 9px 20px;
+            background: #4C4EDB;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s;
+        }
+
+        .btn-primary:hover {
+            background: #3a3cb5;
+        }
+
+        .btn-green {
+            padding: 9px 20px;
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s;
+        }
+
+        .btn-green:hover {
+            background: #15803d;
+        }
+
+        .edit-link {
+            color: #4C4EDB;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .edit-link:hover {
+            text-decoration: underline;
+        }
+
+        .sort-icon {
+            font-size: 14px;
+            vertical-align: middle;
+            color: #9ca3af;
+            cursor: pointer;
+        }
+
+        /* ── HOME PAGE ── */
+        .home-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .home-header-icon {
+            width: 42px;
+            height: 42px;
+            background: #e8e8fa;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-header-icon .material-icons-outlined {
+            color: #4C4EDB;
+            font-size: 22px;
+        }
+
+        .date-picker {
+            padding: 9px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+        }
+
+        .date-picker:focus {
+            border-color: #4C4EDB;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 40px;
+        }
+
+        .empty-state-icon {
+            width: 72px;
+            height: 72px;
+            border: 3px solid #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .empty-state-icon .material-icons-outlined {
+            font-size: 36px;
+            color: #ef4444;
+        }
+
+        .empty-state-text {
+            font-size: 22px;
+            font-weight: 600;
+            color: #4C4EDB;
+        }
+
+        /* ── HOSTELS PAGE ── */
+        .user-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #fff;
+            background: #22c55e;
+        }
+
+        /* ── CATERERS PAGE ── */
+        .caterers-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .caterers-meta .total {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .window-select {
+            padding: 8px 32px 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background: #fff url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+            cursor: pointer;
+        }
+
+        .window-select:focus {
+            border-color: #4C4EDB;
+        }
+
+        .rank-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4C4EDB;
+        }
+
+        .expand-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+        }
+
+        .expand-btn:hover {
+            color: #374151;
+        }
+
+        .caterer-name {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: #374151;
+            transition: color 0.15s;
+        }
+
+        .caterer-hostel {
+            font-size: 11.5px;
+            color: #9ca3af;
+            margin-top: 1px;
+        }
+
+        #caterer-table-body tr {
+            transition: background-color 0.15s ease, box-shadow 0.15s ease;
+            cursor: pointer;
+        }
+
+        #caterer-table-body tr:hover {
+            background-color: #f4f4fd;
+        }
+
+        #caterer-table-body tr:hover .caterer-name {
+            color: #4C4EDB;
+            font-weight: 600;
+        }
+
+        #caterer-table-body tr:hover .expand-btn {
+            color: #4C4EDB;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            color: #374151;
+            transition: background 0.15s;
+        }
+
+        .icon-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .icon-btn .material-icons-outlined {
+            font-size: 18px;
+        }
+
+        /* ── STUDENTS PAGE ── */
+        .student-header-bar {
+            background: #f9fafb;
+            border-radius: 12px 12px 0 0;
+            padding: 18px 24px;
+            border: 1px solid #e5e7eb;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .student-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #d1d5db;
+            border-radius: 24px;
+            transition: 0.2s;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: #4C4EDB;
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(20px);
+        }
+
+        .toggle-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #fff;
+            background: #4C4EDB;
+            border-radius: 4px;
+            padding: 2px 8px;
+        }
+
+        .students-count {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .students-count .material-icons-outlined {
+            font-size: 22px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 0;
+        }
+
+        .search-input {
+            padding: 9px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px 0 0 8px;
+            font-size: 13px;
+            width: 240px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .search-input:focus {
+            border-color: #4C4EDB;
+        }
+
+        .search-btn {
+            padding: 9px 14px;
+            background: #4C4EDB;
+            color: #fff;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-btn:hover {
+            background: #3a3cb5;
+        }
+
+        .student-name {
+            font-weight: 500;
+            color: #111827;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        /* ── HOSTEL ALLOCATIONS PAGE ── */
+        .allocation-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+
+        .allocation-card h2 {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .allocation-card p {
+            font-size: 12.5px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 9px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+            background: #fff;
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-input:focus {
+            border-color: #4C4EDB;
+        }
+
+        select.form-input {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 30px;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+
+        select.form-input.has-value {
+            color: #374151;
+        }
+
+        .save-btn {
+            padding: 9px 28px;
+            background: #4C4EDB;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+
+        .save-btn:hover {
+            background: #3a3cb5;
+        }
+
+        .not-set {
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        /* Table last column right-align */
+        .actions-col {
+            text-align: right !important;
+        }
+
+        .table-spacer {
+            height: 40px;
+        }
+
+        /* ── BILLS PAGE ── */
+        .bills-month {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .month-select {
+            padding: 8px 32px 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background: #fff url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+            cursor: pointer;
+        }
+
+        .bills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .bills-panel {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+
+        .bills-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .bills-panel-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .bills-panel-title.generated { color: #4C4EDB; }
+        .bills-panel-title.pending { color: #ea580c; }
+
+        .hostel-count-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .hostel-count-badge.green { background: #22c55e; }
+        .hostel-count-badge.orange { background: #ea580c; }
+
+        .bills-panel-note {
+            font-size: 11px;
+            color: #6b7280;
+            padding: 4px 20px 0;
+        }
+
+        .bills-panel-body {
+            padding: 20px;
+            min-height: 300px;
+        }
+
+        .bills-empty {
+            text-align: center;
+            color: #d97706;
+            font-size: 13.5px;
+            padding-top: 80px;
+        }
+
+        .pending-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 13.5px;
+        }
+
+        .pending-item:last-child { border-bottom: none; }
+
+        .pending-item .hostel-name { color: #374151; font-weight: 500; }
+        .pending-item .status-text { color: #d97706; font-size: 12.5px; }
+
+        /* ── MESS CHANGE PAGE ── */
+        .mc-layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .mc-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+
+        .mc-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .mc-card-title .material-icons-outlined {
+            font-size: 18px;
+            color: #4C4EDB;
+        }
+
+        .mc-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .mc-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .mc-value {
+            font-size: 12.5px;
+            color: #6b7280;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+
+        .status-badge.disabled {
+            background: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+        }
+
+        .schedule-label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .schedule-label.enable { color: #4C4EDB; }
+        .schedule-label.disable { color: #16a34a; }
+
+        .schedule-desc {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .schedule-next {
+            font-size: 12px;
+            color: #374151;
+            margin-bottom: 16px;
+        }
+
+        .schedule-divider {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 14px 0;
+        }
+
+        .mc-disabled-panel {
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 380px;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .mc-disabled-panel .material-icons-outlined {
+            font-size: 48px;
+            color: #d1d5db;
+            margin-bottom: 16px;
+        }
+
+        .mc-disabled-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+
+        .mc-disabled-desc {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        /* ── SUMMER MESS PAGE ── */
+        .sm-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .sm-stat-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 18px 24px;
+        }
+
+        .sm-stat-label {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 6px;
+        }
+
+        .sm-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .sm-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4C4EDB;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8e8fa;
+        }
+
+        .sm-season-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sm-season-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .sm-idle-badge {
+            display: inline-block;
+            font-size: 11px;
+            color: #9ca3af;
+            background: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+
+        .sm-season-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sm-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .sm-meta-item .material-icons-outlined {
+            font-size: 14px;
+        }
+
+        .sm-meta-item.reg { color: #ef4444; }
+        .sm-meta-item.summer { color: #6b7280; }
+        .sm-meta-item.hostels { color: #6b7280; }
+
+        .btn-open {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 20px;
+            background: #4C4EDB;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s;
+        }
+
+        .btn-open:hover { background: #3a3cb5; }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            background: #fff;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s;
+        }
+
+        .btn-outline:hover { background: #f3f4f6; }
+
+        /* ── GALA DINNER PAGE ── */
+        .gd-layout {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .gd-form-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 24px;
+        }
+
+        .gd-form-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+
+        .gd-field {
+            margin-bottom: 16px;
+        }
+
+        .gd-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .gd-field input,
+        .gd-field select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+            background: #fff;
+        }
+
+        .gd-field input::placeholder { color: #9ca3af; }
+        .gd-field input:focus,
+        .gd-field select:focus { border-color: #4C4EDB; }
+
+        .gd-schedule-btn {
+            width: 100%;
+            padding: 10px;
+            background: #e5e7eb;
+            color: #9ca3af;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: not-allowed;
+            font-family: 'Inter', sans-serif;
+            margin-top: 4px;
+        }
+
+        .gd-table-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+
+        .gd-table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .gd-table-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .gd-search {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .gd-search input {
+            padding: 7px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px 0 0 8px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+            width: 160px;
+        }
+
+        .gd-search input::placeholder { color: #9ca3af; }
+
+        .gd-search button {
+            padding: 7px 10px;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .gd-search button .material-icons-outlined { font-size: 16px; color: #9ca3af; }
+
+        .action-view {
+            color: #4C4EDB;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .action-clear {
+            color: #ef4444;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            margin-left: 12px;
+        }
+
+        .gd-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 12px 24px;
+            font-size: 12px;
+            color: #6b7280;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .gd-page-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            color: #374151;
+        }
+
+        .gd-page-btn.active {
+            background: #4C4EDB;
+            color: #fff;
+            border-color: #4C4EDB;
+        }
+
+        .gd-page-select {
+            padding: 4px 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+        }
+
+        /* ── SEND NOTIFICATIONS PAGE ── */
+        .notif-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .notif-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 24px;
+        }
+
+        .notif-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+
+        .notif-card-title .material-icons-outlined {
+            font-size: 18px;
+            color: #4C4EDB;
+        }
+
+        .notif-field {
+            margin-bottom: 16px;
+        }
+
+        .notif-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .notif-field input,
+        .notif-field textarea,
+        .notif-field select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+            background: #fff;
+        }
+
+        .notif-field input::placeholder,
+        .notif-field textarea::placeholder { color: #9ca3af; }
+
+        .notif-field input:focus,
+        .notif-field textarea:focus,
+        .notif-field select:focus { border-color: #4C4EDB; }
+
+        .notif-field textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .notif-field select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 30px;
+            cursor: pointer;
+        }
+
+        .notif-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .notif-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #4C4EDB;
+            cursor: pointer;
+        }
+
+        .btn-send {
+            width: 100%;
+            padding: 10px 20px;
+            background: #4C4EDB;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-send:hover { background: #3a3cb5; }
+
+        /* ── CATERER DETAIL VIEW ── */
+        .caterer-detail { display: none; }
+        .caterer-detail.active { display: block; }
+        .caterer-list.hidden { display: none; }
+
+        .cd-header {
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 24px 32px;
+            text-align: center;
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .cd-back {
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: #374151;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .cd-back:hover { color: #111827; }
+
+        .cd-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .cd-subtitle {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .cd-tabs {
+            display: flex;
+            gap: 24px;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+
+        .cd-tab {
+            padding: 10px 4px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.15s;
+        }
+
+        .cd-tab:hover { color: #374151; }
+        .cd-tab.active { color: #4C4EDB; border-bottom-color: #4C4EDB; }
+
+        .cd-tab-content { display: none; }
+        .cd-tab-content.active { display: block; }
+
+        .cd-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .cd-stat-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 18px 24px;
+        }
+
+        .cd-stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .cd-stat-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            color: #6b7280;
+        }
+
+        .cd-stat-label .material-icons-outlined { font-size: 16px; }
+
+        .cd-window-badge {
+            font-size: 10px;
+            color: #4C4EDB;
+            border: 1px solid #c7c8f2;
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-weight: 500;
+        }
+
+        .cd-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .cd-stat-value span { font-size: 14px; color: #9ca3af; font-weight: 400; }
+
+        .cd-qr-section {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 20px 24px;
+        }
+
+        .cd-qr-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .cd-qr-title .material-icons-outlined { font-size: 18px; }
+
+        .cd-qr-body {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .cd-qr-img {
+            width: 120px;
+            height: 120px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #9ca3af;
+            flex-shrink: 0;
+        }
+
+        .cd-qr-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+
+        .cd-qr-info p {
+            font-size: 12.5px;
+            color: #6b7280;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .cd-qr-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #4C4EDB;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .cd-qr-btn:hover { background: #3a3cb5; }
+
+        /* Menu tab */
+        .menu-day-select {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .meal-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+        }
+
+        .meal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .meal-category {
+            font-size: 10px;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .meal-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .meal-tag {
+            display: inline-block;
+            padding: 5px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 12.5px;
+            color: #374151;
+            background: #fff;
+        }
+
+        .meal-tag .count { color: #9ca3af; margin-left: 2px; }
+
+        .meal-tag.highlight {
+            color: #4C4EDB;
+            border-color: #c7c8f2;
+        }
+
+        .meal-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Feedbacks tab */
+        .fb-filters {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .fb-checkboxes {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .fb-check-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .fb-check-label input { width: 14px; height: 14px; accent-color: #4C4EDB; }
+
+        .fb-search {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .fb-search input {
+            padding: 7px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+            width: 180px;
+            padding-left: 30px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239ca3af' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E") no-repeat 8px center;
+        }
+
+        .fb-search input::placeholder { color: #9ca3af; }
+
+        .fb-user { font-weight: 600; color: #111827; font-size: 13px; text-transform: uppercase; }
+        .fb-date { font-size: 12.5px; color: #6b7280; }
+        .fb-message { font-size: 13px; color: #374151; font-style: italic; margin-bottom: 6px; }
+
+        .fb-ratings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .fb-rating-label { font-size: 12px; color: #6b7280; }
+
+        .fb-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .fb-badge.average { background: #fef3c7; color: #d97706; }
+        .fb-badge.good { background: #dcfce7; color: #16a34a; }
+        .fb-badge.verypoor { background: #fee2e2; color: #ef4444; }
+        .fb-badge.poor { background: #ffedd5; color: #ea580c; }
+        .fb-badge.excellent { background: #dbeafe; color: #2563eb; }
+
+        .fb-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 12px 0;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-card {
+            background: #f9fafb;
+            border-radius: 14px;
+            padding: 32px 36px;
+            width: 420px;
+            max-width: 90vw;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-field {
+            margin-bottom: 18px;
+        }
+
+        .modal-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .modal-field input,
+        .modal-field select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+            background: #fff;
+        }
+
+        .modal-field input::placeholder { color: #9ca3af; }
+        .modal-field input:focus,
+        .modal-field select:focus { border-color: #4C4EDB; }
+
+        .modal-field select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 32px;
+            cursor: pointer;
+        }
+
+        .modal-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-btn {
+            padding: 9px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s;
+        }
+
+        .modal-btn.create {
+            background: #4C4EDB;
+            color: #fff;
+        }
+
+        .modal-btn.create:hover { background: #3a3cb5; }
+
+        .modal-btn.cancel {
+            background: #4C4EDB;
+            color: #fff;
+        }
+
+        .modal-btn.cancel:hover { background: #3a3cb5; }
+
+        /* ── SUMMER MESS DETAILED VIEWS ── */
+        .sm-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #4C4EDB;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 20px;
+            text-decoration: none;
+        }
+        .sm-back-link:hover { text-decoration: underline; }
+
+        .sm-config-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 20px;
+            align-items: start;
+            margin-bottom: 24px;
+        }
+
+        .sm-form-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 24px;
+        }
+
+        .sm-form-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .sm-form-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .sm-form-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-danger-outline {
+            padding: 8px 16px;
+            background: #fff;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s;
+        }
+        .btn-danger-outline:hover { background: #fef2f2; }
+
+        .sm-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .sm-form-field {
+            margin-bottom: 18px;
+        }
+
+        .sm-form-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .sm-form-field input,
+        .sm-form-field select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+            background: #fff;
+        }
+
+        .sm-form-field input::placeholder { color: #9ca3af; }
+        .sm-form-field input:focus,
+        .sm-form-field select:focus { border-color: #4C4EDB; }
+
+        .sm-field-hint {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 6px;
+        }
+
+        .sm-date-range {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 4px 12px;
+            background: #fff;
+        }
+        .sm-date-range input {
+            border: none;
+            padding: 6px 0;
+            outline: none;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            width: 45%;
+        }
+        .sm-date-range input::placeholder { color: #9ca3af; }
+        .sm-date-range .sep {
+            color: #9ca3af;
+            font-size: 13px;
+            margin: 0 8px;
+        }
+        .sm-date-range .cal-icon {
+            margin-left: auto;
+            color: #9ca3af;
+            font-size: 18px;
+        }
+
+        .sm-tags-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 6px 12px;
+            background: #fff;
+            min-height: 40px;
+        }
+
+        .sm-tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #f3f4f6;
+            color: #374151;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .sm-tag-item .close {
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        .sm-tag-item .close:hover { color: #374151; }
+
+        /* Operations Card */
+        .sm-ops-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 24px;
+        }
+
+        .sm-ops-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+
+        .sm-ops-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .sm-ops-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .sm-ops-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11.5px;
+            font-weight: 500;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+        .sm-ops-badge .material-icons-outlined { font-size: 14px; }
+
+        .sm-ops-section {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #f3f4f6;
+        }
+        .sm-ops-sublabel {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        .sm-ops-subval {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* Applications Card */
+        .sm-apps-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 24px;
+        }
+
+        .sm-apps-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .sm-apps-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .sm-apps-filter {
+            margin-bottom: 20px;
+        }
+        .sm-apps-filter label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        .sm-apps-filter select {
+            width: 100%;
+            max-width: 400px;
+            padding: 9px 36px 9px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #374151;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background: #fff url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+            cursor: pointer;
+        }
+        .sm-apps-filter select:focus {
+            border-color: #4C4EDB;
+        }
+
+        .sm-apps-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .sm-app-panel {
+            background: #f9fafb;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 18px;
+        }
+
+        .sm-app-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .sm-app-count {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .sm-app-count.pending { color: #f59e0b; }
+        .sm-app-count.ack { color: #84cc16; }
+
+        /* ── TOAST NOTIFICATION ── */
+        .app-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #111827;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 2000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        .app-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .app-toast .material-icons-outlined {
+            font-size: 18px;
+            color: #22c55e;
+        }
+        .app-toast.error .material-icons-outlined {
+            color: #ef4444;
+        }
+
+        /* ── REFRESH SPINNING ANIMATION ── */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinning {
+            animation: spin 0.6s linear infinite;
+            display: inline-block;
+        }
+
+        .sm-empty-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+        .sm-empty-box .material-icons-outlined {
+            font-size: 40px;
+            margin-bottom: 8px;
+            color: #d1d5db;
+        }
+
+        /* ── MOBILE RESPONSIVE MEDIA QUERIES (< 768px) ── */
+        .mobile-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #111827;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .mobile-nav-backdrop {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            html, body {
+                overflow-x: hidden;
+            }
+
+            body {
+                flex-direction: column;
+            }
+
+            /* Mobile Top Header & Collapsible Navigation Drawer */
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                height: 60px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+                background: #fff;
+            }
+
+            .sidebar-header {
+                width: 100%;
+                height: 60px;
+                padding: 0 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .mobile-toggle-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .mobile-toggle-btn .material-icons-outlined {
+                font-size: 26px;
+                color: #111827;
+            }
+
+            .sidebar-drawer-content {
+                display: none;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: #fff;
+                flex-direction: column;
+                padding: 16px;
+                overflow-y: auto;
+                z-index: 999;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            }
+
+            .sidebar.mobile-open .sidebar-drawer-content {
+                display: flex;
+            }
+
+            .mobile-nav-backdrop {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.4);
+                z-index: 998;
+            }
+            .sidebar.mobile-open + .mobile-nav-backdrop {
+                display: block;
+            }
+
+            .nav-item {
+                padding: 12px 16px;
+                font-size: 15px;
+            }
+
+            /* Main Content Container */
+            .main {
+                margin-left: 0;
+                padding: 16px 14px 40px;
+                margin-top: 60px;
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            /* Headers & Toolbars */
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .header-actions {
+                width: 100%;
+                display: flex;
+                gap: 8px;
+            }
+            .header-actions .btn-primary,
+            .header-actions .btn-outline {
+                flex: 1;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
+            .search-input {
+                width: 100%;
+                border-radius: 8px 0 0 8px;
+            }
+
+            /* Stats Grids */
+            .sm-stats,
+            .cd-stats,
+            .home-stats-grid {
+                grid-template-columns: 1fr !important;
+                gap: 12px;
+            }
+
+            /* Forms & Split Layouts */
+            .sm-config-layout,
+            .mc-layout,
+            .gd-layout,
+            .notif-layout,
+            .bills-grid,
+            .sm-apps-grid,
+            .meal-row,
+            .sm-form-row {
+                grid-template-columns: 1fr !important;
+                gap: 16px;
+            }
+
+            .allocation-card .form-row {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .allocation-card .form-input,
+            .allocation-card .save-btn {
+                width: 100%;
+                min-height: 44px;
+            }
+
+            /* Cards & Tables */
+            .card,
+            .gd-table-card,
+            .bills-panel,
+            .sm-app-panel,
+            .cd-stat-card,
+            .cd-qr-section,
+            .meal-card,
+            .notif-card,
+            .gd-form-card {
+                padding: 16px;
+                border-radius: 10px;
+                overflow-x: auto;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            /* Table Horizontal Scroll Safety */
+            .card table,
+            .gd-table-card table,
+            .sm-app-panel table {
+                min-width: 540px;
+            }
+
+            /* Season Cards on Mobile */
+            .sm-season-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 14px;
+                padding: 16px;
+            }
+
+            .sm-season-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .sm-season-card .btn-open {
+                width: 100%;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Touch Target & Input Font Zoom Safety */
+            input, select, textarea {
+                font-size: 16px !important; /* Prevents auto-zoom on mobile focus */
+            }
+
+            .btn-primary, .btn-outline, .btn-green, .btn-send, .modal-btn, .gd-schedule-btn {
+                min-height: 44px;
+            }
+
+            /* Modal Responsive Optimization */
+            .modal-card {
+                padding: 22px 18px;
+                width: 92vw;
+            }
+
+            .cd-header {
+                padding: 16px;
+            }
+
+            .cd-back {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                margin-bottom: 12px;
+            }
+
+            .cd-qr-body {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="appSidebar">
+        <div class="sidebar-header">
+            <div>
+                <div class="sidebar-title">IIT Guwahati</div>
+                <div class="sidebar-subtitle">Hostel Affairs Board</div>
+            </div>
+            <button class="mobile-toggle-btn" onclick="toggleMobileNav()" aria-label="Toggle Navigation">
+                <span class="material-icons-outlined" id="mobileToggleIcon">menu</span>
+            </button>
+        </div>
+
+        <div class="sidebar-drawer-content" id="sidebarDrawer">
+            <nav class="sidebar-nav">
+                <a class="nav-item active" data-page="home" onclick="switchPage('home')">
+                    <span class="icon material-icons-outlined">home</span> Home
+                </a>
+                <a class="nav-item" data-page="hostels" onclick="switchPage('hostels')">
+                    <span class="icon material-icons-outlined">apartment</span> Hostels
+                </a>
+                <a class="nav-item" data-page="caterers" onclick="switchPage('caterers')">
+                    <span class="icon material-icons-outlined">restaurant</span> Caterers
+                </a>
+                <a class="nav-item" data-page="students" onclick="switchPage('students')">
+                    <span class="icon material-icons-outlined">groups</span> Students
+                </a>
+                <a class="nav-item" data-page="allocations" onclick="switchPage('allocations')">
+                    <span class="icon material-icons-outlined">assignment</span> Hostel Allocations
+                </a>
+                <a class="nav-item" data-page="bills" onclick="switchPage('bills')">
+                    <span class="icon material-icons-outlined">receipt_long</span> Bills
+                </a>
+                <a class="nav-item" data-page="messchange" onclick="switchPage('messchange')">
+                    <span class="icon material-icons-outlined">swap_horiz</span> Mess Change
+                </a>
+                <a class="nav-item" data-page="summermess" onclick="switchPage('summermess')">
+                    <span class="icon material-icons-outlined">wb_sunny</span> Summer Mess
+                </a>
+                <a class="nav-item" data-page="galadinner" onclick="switchPage('galadinner')">
+                    <span class="icon material-icons-outlined">dinner_dining</span> Gala Dinner
+                </a>
+                <a class="nav-item" data-page="notifications" onclick="switchPage('notifications')">
+                    <span class="icon material-icons-outlined">send</span> Send Notifications
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn">
+                    <span class="material-icons-outlined" style="font-size:18px">person</span> Logout
+                </button>
+                <div class="footer-text">
+                    Coding Club<br>&copy; 2025 IIT Guwahati
+                </div>
+            </div>
+        </div>
+    </aside>
+    <div class="mobile-nav-backdrop" id="navBackdrop" onclick="closeMobileNav()"></div>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PAGE: HOME                                  -->
+        <!-- ════════════════════════════════════════════ -->
+        <div id="page-home" class="page-section active">
+            <div class="page-header">
+                <div class="home-header">
+                    <div class="home-header-icon">
+                        <span class="material-icons-outlined">bar_chart</span>
+                    </div>
+                    <div>
+                        <h1 class="page-title">Overall Statistics</h1>
+                        <p class="page-subtitle">Track daily meal attendance patterns</p>
+                    </div>
+                </div>
+                <input type="date" class="date-picker" value="2026-08-04">
+            </div>
+
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <span class="material-icons-outlined">priority_high</span>
+                </div>
+                <div class="empty-state-text">This Date has no Stats!</div>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PAGE: HOSTELS                               -->
+        <!-- ════════════════════════════════════════════ -->
+        <div id="page-hostels" class="page-section">
+            <div class="page-header">
+                <h1 class="page-title">Hostels</h1>
+                <button class="btn-green">+ Add Hostel</button>
+            </div>
+
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hostel Name <span class="sort-icon material-icons-outlined" style="font-size:14px">unfold_more</span></th>
+                            <th>Caterer Name <span class="sort-icon material-icons-outlined" style="font-size:14px">unfold_more</span></th>
+                            <th>Number of Users <span class="sort-icon material-icons-outlined" style="font-size:14px">unfold_more</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Manas</td><td>Sugandhim Food & Catering Pvt. Lt</td><td><span class="user-badge">302 users</span></td></tr>
+                        <tr><td>Gaurang</td><td>Delicious Catering</td><td><span class="user-badge">412 users</span></td></tr>
+                        <tr><td>Umiam</td><td>Nyasha Enterprise</td><td><span class="user-badge">514 users</span></td></tr>
+                        <tr><td>Kapili</td><td>Sheela Caterers</td><td><span class="user-badge">305 users</span></td></tr>
+                        <tr><td>Disang</td><td>Aditya Caterers</td><td><span class="user-badge">972 users</span></td></tr>
+                        <tr><td>Brahmaputra</td><td>Ideal Catering Services</td><td><span class="user-badge">1107 users</span></td></tr>
+                        <tr><td>Dhansiri</td><td>Aay Pee Trading</td><td><span class="user-badge">384 users</span></td></tr>
+                        <tr><td>Dihing</td><td>Navi Harish Hospitality Pvt Ltd</td><td><span class="user-badge">314 users</span></td></tr>
+                        <tr><td>Siang</td><td>Vidya Caterers</td><td><span class="user-badge">291 users</span></td></tr>
+                        <tr><td>Barak</td><td>M/S - Dulal Sen</td><td><span class="user-badge">532 users</span></td></tr>
+                        <tr><td>Lohit</td><td>M/s. Anusha Hospitality Services</td><td><span class="user-badge">1018 users</span></td></tr>
+                        <tr><td>Subansiri</td><td>Food Sutra Art Of Spice Pvt Ltd</td><td><span class="user-badge">425 users</span></td></tr>
+                        <tr><td>Kameng</td><td>Shakthis Kitchen</td><td><span class="user-badge">484 users</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PAGE: CATERERS                              -->
+        <!-- ════════════════════════════════════════════ -->
+        <div id="page-caterers" class="page-section">
+            <div id="caterer-list" class="caterer-list">
+            <div class="page-header">
+                <h1 class="page-title">Caterers</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="document.getElementById('addCatererModal').classList.add('active')">+ Add Caterer</button>
+                    <button class="icon-btn" onclick="handleRefresh(this, 'Caterers')"><span class="material-icons-outlined">refresh</span></button>
+                </div>
+            </div>
+
+
+            <div class="caterers-meta">
+                <span class="total">Total: 13 caterers</span>
+                <select class="window-select">
+                    <option>Window 16</option>
+                    <option>Window 15</option>
+                    <option>Window 14</option>
+                </select>
+            </div>
+
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:40px"></th>
+                            <th style="width:60px">Rank</th>
+                            <th>Caterer</th>
+                            <th>Feedbacks</th>
+                            <th>Feedback %</th>
+                            <th>SMC Members</th>
+                            <th>OPI Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody id="caterer-table-body">
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">1</span></td>
+                            <td><div class="caterer-name">M/S - Dulal Sen</div><div class="caterer-hostel">Barak</div></td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>1</td>
+                            <td>3.99</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">2</span></td>
+                            <td><div class="caterer-name">Navi Harish Hospitality Pvt Ltd</div><div class="caterer-hostel">Dihing</div></td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>3.00</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">3</span></td>
+                            <td><div class="caterer-name">Food Sutra Art of Spice Pvt Ltd</div><div class="caterer-hostel">Subansiri</div></td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>3.00</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">4</span></td>
+                            <td><div class="caterer-name">Aditya Caterers</div><div class="caterer-hostel">Disang</div></td>
+                            <td>7</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>3.00</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">5</span></td>
+                            <td><div class="caterer-name">Sugandhim Food & Catering Pvt. Lt</div><div class="caterer-hostel">Manas</div></td>
+                            <td>3</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>3.00</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">6</span></td>
+                            <td><div class="caterer-name">Nyasha Enterprise</div><div class="caterer-hostel">Umiam</div></td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>3.00</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">7</span></td>
+                            <td><div class="caterer-name">Ideal Catering Services</div><div class="caterer-hostel">Brahmaputra</div></td>
+                            <td>5</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>3.00</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">8</span></td>
+                            <td><div class="caterer-name">Aay Pee Trading</div><div class="caterer-hostel">Dhansiri</div></td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>2.99</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">9</span></td>
+                            <td><div class="caterer-name">Sheela Caterers</div><div class="caterer-hostel">Kapili</div></td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>2.99</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">10</span></td>
+                            <td><div class="caterer-name">Delicious Catering</div><div class="caterer-hostel">Gaurang</div></td>
+                            <td>3</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>2.99</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">11</span></td>
+                            <td><div class="caterer-name">M/s. Anusha Hospitality Services</div><div class="caterer-hostel">Lohit</div></td>
+                            <td>14</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>2.99</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">12</span></td>
+                            <td><div class="caterer-name">Shakthis Kitchen</div><div class="caterer-hostel">Kameng</div></td>
+                            <td>4</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>2.98</td>
+                        </tr>
+                        <tr>
+                            <td><button class="expand-btn">+</button></td>
+                            <td><span class="rank-num">13</span></td>
+                            <td><div class="caterer-name">Vidya Caterers</div><div class="caterer-hostel">Siang</div></td>
+                            <td>3</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td>2.95</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div><!-- /caterer-list -->
+
+            <!-- Caterer Detail View -->
+            <div id="caterer-detail" class="caterer-detail">
+                <div class="cd-header">
+                    <a class="cd-back" onclick="closeCatererDetail()">
+                        <span class="material-icons-outlined" style="font-size:16px">arrow_back</span> Back
+                    </a>
+                    <div class="cd-name" id="cd-caterer-name">M/S - Dulal Sen</div>
+                    <div class="cd-subtitle">Caterer Dashboard</div>
+                </div>
+
+                <div class="cd-tabs">
+                    <div class="cd-tab active" onclick="switchCatererTab('info')">Caterer Info</div>
+                    <div class="cd-tab" onclick="switchCatererTab('menu')">Menu</div>
+                    <div class="cd-tab" onclick="switchCatererTab('feedbacks')">Feedbacks</div>
+                </div>
+
+                <!-- TAB: Caterer Info -->
+                <div id="cd-tab-info" class="cd-tab-content active">
+                    <div class="cd-stats">
+                        <div class="cd-stat-card">
+                            <div class="cd-stat-header">
+                                <span class="cd-stat-label"><span class="material-icons-outlined">star_outline</span> OPI Rating</span>
+                                <span class="cd-window-badge">Window 16</span>
+                            </div>
+                            <div class="cd-stat-value" id="cd-rating">3.99 <span>/ 5.0</span></div>
+                        </div>
+                        <div class="cd-stat-card">
+                            <div class="cd-stat-header">
+                                <span class="cd-stat-label"><span class="material-icons-outlined">emoji_events</span> Rank</span>
+                                <span class="cd-window-badge">Window 16</span>
+                            </div>
+                            <div class="cd-stat-value" id="cd-rank">1</div>
+                        </div>
+                        <div class="cd-stat-card">
+                            <div class="cd-stat-header">
+                                <span class="cd-stat-label"><span class="material-icons-outlined">description</span> Feedbacks</span>
+                            </div>
+                            <div class="cd-stat-value" id="cd-feedbacks">2</div>
+                        </div>
+                    </div>
+
+                    <div class="cd-qr-section">
+                        <div class="cd-qr-title">
+                            <span class="material-icons-outlined">qr_code_2</span> QR Code
+                        </div>
+                        <div class="cd-qr-body">
+                            <div class="cd-qr-img">
+                                <svg viewBox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="5" y="5" width="25" height="25" fill="#111" rx="2"/><rect x="10" y="10" width="15" height="15" fill="#fff" rx="1"/><rect x="13" y="13" width="9" height="9" fill="#111" rx="1"/>
+                                    <rect x="70" y="5" width="25" height="25" fill="#111" rx="2"/><rect x="75" y="10" width="15" height="15" fill="#fff" rx="1"/><rect x="78" y="13" width="9" height="9" fill="#111" rx="1"/>
+                                    <rect x="5" y="70" width="25" height="25" fill="#111" rx="2"/><rect x="10" y="75" width="15" height="15" fill="#fff" rx="1"/><rect x="13" y="78" width="9" height="9" fill="#111" rx="1"/>
+                                    <rect x="35" y="5" width="5" height="5" fill="#111"/><rect x="45" y="5" width="5" height="5" fill="#111"/><rect x="55" y="5" width="5" height="5" fill="#111"/>
+                                    <rect x="35" y="15" width="5" height="5" fill="#111"/><rect x="50" y="15" width="5" height="5" fill="#111"/><rect x="60" y="15" width="5" height="5" fill="#111"/>
+                                    <rect x="35" y="35" width="5" height="5" fill="#111"/><rect x="50" y="35" width="5" height="5" fill="#111"/><rect x="65" y="35" width="5" height="5" fill="#111"/><rect x="85" y="35" width="5" height="5" fill="#111"/>
+                                    <rect x="5" y="45" width="5" height="5" fill="#111"/><rect x="40" y="45" width="5" height="5" fill="#111"/><rect x="55" y="45" width="5" height="5" fill="#111"/><rect x="90" y="45" width="5" height="5" fill="#111"/>
+                                    <rect x="35" y="55" width="5" height="5" fill="#111"/><rect x="60" y="55" width="5" height="5" fill="#111"/><rect x="80" y="55" width="5" height="5" fill="#111"/>
+                                    <rect x="50" y="65" width="5" height="5" fill="#111"/><rect x="75" y="65" width="5" height="5" fill="#111"/><rect x="90" y="65" width="5" height="5" fill="#111"/>
+                                    <rect x="40" y="75" width="5" height="5" fill="#111"/><rect x="70" y="75" width="5" height="5" fill="#111"/><rect x="85" y="75" width="5" height="5" fill="#111"/>
+                                    <rect x="45" y="85" width="5" height="5" fill="#111"/><rect x="60" y="85" width="5" height="5" fill="#111"/><rect x="75" y="85" width="5" height="5" fill="#111"/><rect x="90" y="85" width="5" height="5" fill="#111"/>
+                                </svg>
+                            </div>
+                            <div class="cd-qr-info">
+                                <h4>Access Information</h4>
+                                <p>Scan this QR code to access caterer services, menu information, and provide feedback. Share this code with students and staff for easy access.</p>
+                                <button class="cd-qr-btn"><span class="material-icons-outlined" style="font-size:14px">download</span> Download QR Code</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: Menu -->
+                <div id="cd-tab-menu" class="cd-tab-content">
+                    <div class="menu-day-select">
+                        Day:
+                        <select class="window-select">
+                            <option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+                        </select>
+                    </div>
+                    <div class="meal-card">
+                        <div class="meal-title">Breakfast</div>
+                        <div class="meal-category">DISH</div>
+                        <div class="meal-items">
+                            <span class="meal-tag">Aloo Onion Parantha With Curd Pickle <span class="count">(0)</span></span>
+                            <span class="meal-tag">Dahi Chiwda <span class="count">(0)</span></span>
+                            <span class="meal-tag">Mandatory Item <span class="count">(0)</span></span>
+                            <span class="meal-tag">Fruits <span class="count">(0)</span></span>
+                        </div>
+                        <div class="meal-row">
+                            <div><div class="meal-category">BREADS &amp; RICE</div><div class="meal-items"><span class="meal-tag highlight">Brown Bread <span class="count">(0)</span></span></div></div>
+                            <div><div class="meal-category">OTHERS</div><div class="meal-items"><span class="meal-tag highlight">Tea <span class="count">(0)</span></span><span class="meal-tag highlight">Milk <span class="count">(0)</span></span><span class="meal-tag highlight">Coffee <span class="count">(0)</span></span></div></div>
+                        </div>
+                    </div>
+                    <div class="meal-card">
+                        <div class="meal-title">Lunch</div>
+                        <div class="meal-category">DISH</div>
+                        <div class="meal-items">
+                            <span class="meal-tag">Tori Aloo Sabzi <span class="count">(0)</span></span>
+                            <span class="meal-tag">Rajma Masala <span class="count">(0)</span></span>
+                            <span class="meal-tag">Dal Fry <span class="count">(0)</span></span>
+                        </div>
+                        <div class="meal-row">
+                            <div><div class="meal-category">BREADS &amp; RICE</div><div class="meal-items"><span class="meal-tag highlight">Rice <span class="count">(0)</span></span><span class="meal-tag highlight">Roti <span class="count">(0)</span></span><span class="meal-tag highlight">Jeera Rice <span class="count">(0)</span></span></div></div>
+                            <div><div class="meal-category">OTHERS</div><div class="meal-items"><span class="meal-tag highlight">Curd <span class="count">(0)</span></span><span class="meal-tag highlight">Boondi Raita <span class="count">(0)</span></span><span class="meal-tag highlight">Chutney <span class="count">(0)</span></span><span class="meal-tag highlight">Lassi <span class="count">(0)</span></span></div></div>
+                        </div>
+                    </div>
+                    <div class="meal-card">
+                        <div class="meal-title">Dinner</div>
+                        <div class="meal-category">DISH</div>
+                        <div class="meal-items">
+                            <span class="meal-tag">Aloo Bean Carrot Stir Fry <span class="count">(0)</span></span>
+                            <span class="meal-tag">Dal Tadka <span class="count">(0)</span></span>
+                            <span class="meal-tag">Veg Manchurian <span class="count">(0)</span></span>
+                        </div>
+                        <div class="meal-row">
+                            <div><div class="meal-category">BREADS &amp; RICE</div><div class="meal-items"><span class="meal-tag highlight">Rice <span class="count">(0)</span></span><span class="meal-tag highlight">Roti <span class="count">(0)</span></span><span class="meal-tag highlight">Veg Fried Rice <span class="count">(0)</span></span></div></div>
+                            <div><div class="meal-category">OTHERS</div><div class="meal-items"><span class="meal-tag highlight">Chutney <span class="count">(0)</span></span><span class="meal-tag highlight">Nimbu Pani <span class="count">(0)</span></span></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: Feedbacks -->
+                <div id="cd-tab-feedbacks" class="cd-tab-content">
+                    <div class="fb-filters">
+                        <div class="fb-checkboxes">
+                            <label class="fb-check-label"><input type="checkbox"> Hide Empty Messages</label>
+                            <label class="fb-check-label"><input type="checkbox"> Only Show SMC Users</label>
+                            <label class="fb-check-label"><input type="checkbox"> Hide Ratings</label>
+                        </div>
+                        <div class="fb-search"><input type="text" placeholder="Search feedbacks..."></div>
+                    </div>
+                    <div class="card">
+                        <table>
+                            <thead><tr><th style="width:180px">User</th><th style="width:180px">Date</th><th>Feedback</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td class="fb-user">SACHIN KUMAR</td>
+                                    <td class="fb-date">23 Jul 2026, 10:50 pm</td>
+                                    <td>
+                                        <div class="fb-message">Need to work on taste</div>
+                                        <div class="fb-ratings">
+                                            <span class="fb-rating-label">Breakfast:</span> <span class="fb-badge average">Average</span>
+                                            <span class="fb-rating-label">Lunch:</span> <span class="fb-badge average">Average</span>
+                                            <span class="fb-rating-label">Dinner:</span> <span class="fb-badge average">Average</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fb-user">AARSH JAIN</td>
+                                    <td class="fb-date">23 Jul 2026, 07:21 pm</td>
+                                    <td>
+                                        <div class="fb-message">(No message provided)</div>
+                                        <div class="fb-ratings">
+                                            <span class="fb-rating-label">Breakfast:</span> <span class="fb-badge verypoor">Very Poor</span>
+                                            <span class="fb-rating-label">Lunch:</span> <span class="fb-badge verypoor">Very Poor</span>
+                                            <span class="fb-rating-label">Dinner:</span> <span class="fb-badge verypoor">Very Poor</span>
+                                            <span class="fb-rating-label">Hygiene:</span> <span class="fb-badge good">Good</span>
+                                        </div>
+                                        <div class="fb-ratings">
+                                            <span class="fb-rating-label">Quality:</span> <span class="fb-badge good">Good</span>
+                                            <span class="fb-rating-label">Uniform:</span> <span class="fb-badge good">Good</span>
+                                            <span class="fb-rating-label">Waste:</span> <span class="fb-badge good">Good</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="fb-pagination">
+                            Total 2 feedbacks
+                            <button class="gd-page-btn">&lt;</button>
+                            <button class="gd-page-btn active">1</button>
+                            <button class="gd-page-btn">&gt;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PAGE: STUDENTS                              -->
+        <!-- ════════════════════════════════════════════ -->
+        <div id="page-students" class="page-section">
+            <div class="page-header">
+                <h1 class="page-title">Student Management</h1>
+                <div class="toggle-container">
+                    Profile photos
+                    <span class="toggle-label">On</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                <div class="students-count">
+                    <span class="material-icons-outlined">person_outline</span>
+                    Students (7170)
+                </div>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search by name or roll number...">
+                    <button class="search-btn"><span class="material-icons-outlined" style="font-size:18px">search</span></button>
+                </div>
+            </div>
+
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Roll Number <span class="sort-icon material-icons-outlined" style="font-size:14px">unfold_more</span></th>
+                            <th>Hostel <span class="sort-icon material-icons-outlined" style="font-size:14px">unfold_more</span></th>
+                            <th>Current Mess <span class="sort-icon material-icons-outlined" style="font-size:14px">unfold_more</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="student-name">JAYANSH KHANDELWAL</td><td>240123027</td><td>Barak</td><td>M/S - Dulal Sen</td></tr>
+                        <tr><td class="student-name">TARUN GUPTA</td><td>240102257</td><td>Barak</td><td>M/S - Dulal Sen</td></tr>
+                        <tr><td class="student-name">ARYAN BASRA</td><td>250123015</td><td>Brahmaputra</td><td>Ideal Catering Services</td></tr>
+                        <tr><td class="student-name">PASALA EKSHITH SAI GUNAKAR</td><td>230102068</td><td>Brahmaputra</td><td>Ideal Catering Services</td></tr>
+                        <tr><td class="student-name">KUNAL ANIL PATARE</td><td>244103221</td><td>Brahmaputra</td><td>Ideal Catering Services</td></tr>
+                        <tr><td class="student-name">VISHNU GADDVALAY</td><td>240102100</td><td>Brahmaputra</td><td>Ideal Catering Services</td></tr>
+                        <tr><td class="student-name">ADITYA YADAV</td><td>250104007</td><td>Barak</td><td>M/S - Dulal Sen</td></tr>
+                        <tr><td class="student-name">DEVENDRA KUMAR</td><td>246122003</td><td>Barak</td><td>M/S - Dulal Sen</td></tr>
+                        <tr><td class="student-name">ANIKET KUMAR SHARMA</td><td>230205007</td><td>Barak</td><td>M/S  Dulal Sen</td></tr>
+                        <tr><td class="student-name">RATIK GARG</td><td>250103081</td><td>Barak</td><td>M/S - Dulal Sen</td></tr>
+                        <tr><td class="student-name">OMBEER SINGH TOMAR</td><td>240107053</td><td>Barak</td><td>M/S - Dulal Sen</td></tr>
+                        <tr><td class="student-name">HARI PRASATH B</td><td>244106010</td><td>Barak</td><td>M/S  Dulal Sen</td></tr>
+                        <tr><td class="student-name">AARYAN KUMAR</td><td>250107003</td><td>Barak</td><td>M/S - Dulal Sen</td></tr>
+                        <tr><td class="student-name">THOTAKURA GOWTHAM VIJAY KASYAP</td><td>250101106</td><td>Brahmaputra</td><td>Ideal Catering Services</td></tr>
+                        <tr><td class="student-name">MAYANK SAINI</td><td>250102232</td><td>Barak</td><td>M/S - Dulal Sen</td></tr>
+                        <tr><td class="student-name">ROHIT SHARMA</td><td>240105089</td><td>Kameng</td><td>Shakthis Kitchen</td></tr>
+                        <tr><td class="student-name">PRIYA MENON</td><td>250112045</td><td>Umiam</td><td>Nyasha Enterprise</td></tr>
+                        <tr><td class="student-name">SIDDHARTH NAIR</td><td>230108076</td><td>Disang</td><td>Aditya Caterers</td></tr>
+                        <tr><td class="student-name">ANANYA REDDY</td><td>244109112</td><td>Kapili</td><td>Sheela Caterers</td></tr>
+                        <tr><td class="student-name">HARSH VARDHAN SINGH</td><td>250106034</td><td>Manas</td><td>Sugandhim Food & Catering Pvt. Lt</td></tr>
+                        <tr><td class="student-name">DEEPIKA PATEL</td><td>240111098</td><td>Subansiri</td><td>Food Sutra Art Of Spice Pvt Ltd</td></tr>
+                        <tr><td class="student-name">AMIT KUMAR DAS</td><td>246118055</td><td>Siang</td><td>Vidya Caterers</td></tr>
+                        <tr><td class="student-name">NEHA KRISHNAMURTHY</td><td>230204019</td><td>Dhansiri</td><td>Aay Pee Trading</td></tr>
+                        <tr><td class="student-name">VIVEK RANJAN</td><td>250109067</td><td>Dihing</td><td>Navi Harish Hospitality Pvt Ltd</td></tr>
+                        <tr><td class="student-name">SHRUTI AGARWAL</td><td>240103144</td><td>Lohit</td><td>M/s. Anusha Hospitality Services</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PAGE: HOSTEL ALLOCATIONS                    -->
+        <!-- ════════════════════════════════════════════ -->
+        <div id="page-allocations" class="page-section">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Hostel Allocations</h1>
+                    <p class="page-subtitle">Manage student hostel allocations and email mappings</p>
+                </div>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search by Roll Number...">
+                    <button class="search-btn" style="padding:9px 18px;font-size:13px;">Search</button>
+                </div>
+            </div>
+
+            <!-- Add / Update Form -->
+            <div class="allocation-card">
+                <h2>Add / Update a single allocation</h2>
+                <p>Email and current subscribed mess are optional. If current subscribed mess is left empty, it will default to the selected hostel.</p>
+                <div class="form-row">
+                    <input type="text" class="form-input" id="alloc-roll" placeholder="Roll number">
+                    <select class="form-input" id="alloc-hostel">
+                        <option value="" disabled selected>Select hostel</option>
+                        <option value="Barak">Barak</option>
+                        <option value="Brahmaputra">Brahmaputra</option>
+                        <option value="Dhansiri">Dhansiri</option>
+                        <option value="Dihing">Dihing</option>
+                        <option value="Disang">Disang</option>
+                        <option value="Gaurang">Gaurang</option>
+                        <option value="Kameng">Kameng</option>
+                        <option value="Kapili">Kapili</option>
+                        <option value="Lohit">Lohit</option>
+                        <option value="Manas">Manas</option>
+                        <option value="Siang">Siang</option>
+                        <option value="Subansiri">Subansiri</option>
+                        <option value="Umiam">Umiam</option>
+                    </select>
+                    <input type="text" class="form-input" id="alloc-mess" placeholder="Subscribed mess (optional)">
+                    <input type="email" class="form-input" id="alloc-email" placeholder="Email (optional)">
+                    <button class="save-btn" onclick="saveAllocation()">Save</button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Hostel</th>
+                            <th>Subscribed Mess</th>
+                            <th>Email</th>
+                            <th class="actions-col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alloc-table-body">
+                        <tr><td style="font-weight:600;color:#111827">146102047</td><td>Lohit</td><td>Lohit</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">156105013</td><td>Lohit</td><td>Lohit</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">156302005</td><td>Barak</td><td>Barak</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">166102108</td><td>Barak</td><td>Barak</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">170101025</td><td>Brahmaputra</td><td>Brahmaputra</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">176102111</td><td>Umiam</td><td>Umiam</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">176107016</td><td>Subansiri</td><td>Subansiri</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">176121102</td><td>Kameng</td><td>Kameng</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">176153101</td><td>Lohit</td><td>Lohit</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">176154103</td><td>Umiam</td><td>Umiam</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">186102007</td><td>Lohit</td><td>Lohit</td><td>gangesh@iitg.ac.in</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">186102015</td><td>Lohit</td><td>Lohit</td><td>shiv18@iitg.ac.in</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">196102044</td><td>Disang</td><td>Disang</td><td>ankit44@iitg.ac.in</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">196105078</td><td>Manas</td><td>Manas</td><td>priya78@iitg.ac.in</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">206101033</td><td>Kapili</td><td>Kapili</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">206103091</td><td>Siang</td><td>Siang</td><td>rahul91@iitg.ac.in</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">216104022</td><td>Dhansiri</td><td>Dhansiri</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">216107056</td><td>Gaurang</td><td>Gaurang</td><td>meena56@iitg.ac.in</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">226102089</td><td>Dihing</td><td>Dihing</td><td class="not-set">Not set</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                        <tr><td style="font-weight:600;color:#111827">226108012</td><td>Brahmaputra</td><td>Brahmaputra</td><td>vivek12@iitg.ac.in</td><td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PAGE: BILLS                                 -->
+        <!-- ════════════════════════════════════════════ -->
+        <div id="page-bills" class="page-section">
+            <div class="page-header">
+                <h1 class="page-title">Mess Bills</h1>
+            </div>
+
+            <div class="bills-month">
+                Select Month:
+                <select class="month-select">
+                    <option selected>August 2026</option>
+                    <option>July 2026</option>
+                    <option>June 2026</option>
+                    <option>May 2026</option>
+                </select>
+            </div>
+
+            <div class="bills-grid">
+                <!-- Generated Bills -->
+                <div class="bills-panel">
+                    <div class="bills-panel-header">
+                        <span class="bills-panel-title generated">Generated Bills</span>
+                        <span class="hostel-count-badge green">4 Hostels</span>
+                    </div>
+                    <div class="bills-panel-note">* Click on any entry to view detailed calculations</div>
+                    <div style="padding:0">
+                        <div class="pending-item"><span class="hostel-name">Kameng</span><span style="color:#16a34a;font-size:12.5px;font-weight:500">₹2,84,500</span></div>
+                        <div class="pending-item"><span class="hostel-name">Subansiri</span><span style="color:#16a34a;font-size:12.5px;font-weight:500">₹3,12,750</span></div>
+                        <div class="pending-item"><span class="hostel-name">Disang</span><span style="color:#16a34a;font-size:12.5px;font-weight:500">₹7,45,200</span></div>
+                        <div class="pending-item"><span class="hostel-name">Siang</span><span style="color:#16a34a;font-size:12.5px;font-weight:500">₹2,18,900</span></div>
+                    </div>
+                </div>
+
+                <!-- Pending Generation -->
+                <div class="bills-panel">
+                    <div class="bills-panel-header">
+                        <span class="bills-panel-title pending">Pending Generation</span>
+                        <span class="hostel-count-badge orange">7 Hostels</span>
+                    </div>
+                    <div style="padding:0">
+                        <div class="pending-item"><span class="hostel-name">Manas</span><span class="status-text">Not Generated</span></div>
+                        <div class="pending-item"><span class="hostel-name">Gaurang</span><span class="status-text">Not Generated</span></div>
+                        <div class="pending-item"><span class="hostel-name">Umiam</span><span class="status-text">Not Generated</span></div>
+                        <div class="pending-item"><span class="hostel-name">Kapili</span><span class="status-text">Not Generated</span></div>
+                        <div class="pending-item"><span class="hostel-name">Brahmaputra</span><span class="status-text">Not Generated</span></div>
+                        <div class="pending-item"><span class="hostel-name">Dhansiri</span><span class="status-text">Not Generated</span></div>
+                        <div class="pending-item"><span class="hostel-name">Lohit</span><span class="status-text">Not Generated</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PAGE: MESS CHANGE                           -->
+        <!-- ════════════════════════════════════════════ -->
+        <div id="page-messchange" class="page-section">
+            <div class="page-header">
+                <h1 class="page-title">Mess Change</h1>
+            </div>
+
+            <div class="mc-layout">
+                <div>
+                    <!-- Mess Change Control -->
+                    <div class="mc-card">
+                        <div class="mc-card-title">
+                            <span class="material-icons-outlined">schedule</span>
+                            Mess Change Control
+                        </div>
+                        <div class="mc-row">
+                            <span class="mc-label">Status:</span>
+                            <span class="status-badge disabled">
+                                <span class="material-icons-outlined" style="font-size:12px">cancel</span>
+                                Disabled
+                            </span>
+                        </div>
+                        <div style="margin-top:12px">
+                            <div class="mc-label">Last Processed:</div>
+                            <div class="mc-value">30/3/2026, 11:29:50 pm</div>
+                        </div>
+                    </div>
+
+                    <!-- Automatic Schedule -->
+                    <div class="mc-card">
+                        <div class="mc-card-title">
+                            <span class="material-icons-outlined">schedule</span>
+                            Automatic Schedule
+                        </div>
+                        <div class="schedule-label enable">Auto Enable</div>
+                        <div class="schedule-desc">28th-30th at 9:00 AM IST</div>
+                        <div class="schedule-next">Next: 28/8/2026, 9:00:00 am</div>
+                        <hr class="schedule-divider">
+                        <div class="schedule-label disable">Auto Disable</div>
+                        <div class="schedule-desc">End of day on 30th IST</div>
+                        <div class="schedule-next">Next: 30/8/2026, 11:59:59 pm</div>
+                    </div>
+                </div>
+
+                <!-- Disabled State -->
+                <div class="mc-disabled-panel">
+                    <span class="material-icons-outlined">swap_horiz</span>
+                    <div class="mc-disabled-title">Mess Change is Currently Disabled</div>
+                    <div class="mc-disabled-desc">Requests can only be viewed when the mess change window is active.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PAGE: SUMMER MESS                           -->
+        <!-- ════════════════════════════════════════════ -->
+        <div id="page-summermess" class="page-section">
+            <!-- VIEW 1: Seasons List -->
+            <div id="sm-list-view">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Summer Mess</h1>
+                        <p class="page-subtitle">Pick a summer season to open its settings page. This list shows the available summer mess seasons, their current status, and the date windows they are configured for.</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-primary" onclick="showSmCreateView()">+ New Season</button>
+                        <button class="btn-outline" onclick="handleRefresh(this, 'Summer Mess')">
+                            <span class="material-icons-outlined" style="font-size:16px">refresh</span>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sm-stats">
+                    <div class="sm-stat-card">
+                        <div class="sm-stat-label">Total seasons</div>
+                        <div class="sm-stat-value">4</div>
+                    </div>
+                    <div class="sm-stat-card">
+                        <div class="sm-stat-label">Active summer</div>
+                        <div class="sm-stat-value">None</div>
+                    </div>
+                    <div class="sm-stat-card">
+                        <div class="sm-stat-label">Open registration</div>
+                        <div class="sm-stat-value">None</div>
+                    </div>
+                </div>
+
+                <div class="sm-section-title">Available summer mess seasons</div>
+
+                <div class="sm-season-card">
+                    <div>
+                        <div class="sm-season-name">Summer 2026 Phase 2 <span class="sm-idle-badge">Idle</span></div>
+                        <div class="sm-season-meta">
+                            <span class="sm-meta-item reg">
+                                <span class="material-icons-outlined">event</span>
+                                Registration: 6/12/2025 to 6/16/2026
+                            </span>
+                            <span class="sm-meta-item summer">
+                                <span class="material-icons-outlined">schedule</span>
+                                Summer: 6/15/2026 to 7/15/2026
+                            </span>
+                            <span class="sm-meta-item hostels">
+                                <span class="material-icons-outlined">groups</span>
+                                3 participating hostels
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn-open" onclick="showSmConfigView('Summer 2026 Phase 2')">→ Open</button>
+                </div>
+
+                <div class="sm-season-card">
+                    <div>
+                        <div class="sm-season-name">Summer 2026 Phase 1 <span class="sm-idle-badge">Idle</span></div>
+                        <div class="sm-season-meta">
+                            <span class="sm-meta-item reg">
+                                <span class="material-icons-outlined">event</span>
+                                Registration: 5/9/2026 to 5/12/2026
+                            </span>
+                            <span class="sm-meta-item summer">
+                                <span class="material-icons-outlined">schedule</span>
+                                Summer: 5/10/2026 to 6/14/2026
+                            </span>
+                            <span class="sm-meta-item hostels">
+                                <span class="material-icons-outlined">groups</span>
+                                4 participating hostels
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn-open" onclick="showSmConfigView('Summer 2026 Phase 1')">→ Open</button>
+                </div>
+
+                <div class="sm-season-card">
+                    <div>
+                        <div class="sm-season-name">Winter 2025 Phase 2 <span class="sm-idle-badge">Completed</span></div>
+                        <div class="sm-season-meta">
+                            <span class="sm-meta-item reg">
+                                <span class="material-icons-outlined">event</span>
+                                Registration: 11/20/2025 to 11/28/2025
+                            </span>
+                            <span class="sm-meta-item summer">
+                                <span class="material-icons-outlined">schedule</span>
+                                Winter: 12/1/2025 to 1/15/2026
+                            </span>
+                            <span class="sm-meta-item hostels">
+                                <span class="material-icons-outlined">groups</span>
+                                6 participating hostels
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn-open" onclick="showSmConfigView('Winter 2025 Phase 2')">→ Open</button>
+                </div>
+
+                <div class="sm-season-card">
+                    <div>
+                        <div class="sm-season-name">Winter 2025 Phase 1 <span class="sm-idle-badge">Completed</span></div>
+                        <div class="sm-season-meta">
+                            <span class="sm-meta-item reg">
+                                <span class="material-icons-outlined">event</span>
+                                Registration: 10/15/2025 to 10/22/2025
+                            </span>
+                            <span class="sm-meta-item summer">
+                                <span class="material-icons-outlined">schedule</span>
+                                Winter: 10/25/2025 to 11/30/2025
+                            </span>
+                            <span class="sm-meta-item hostels">
+                                <span class="material-icons-outlined">groups</span>
+                                5 participating hostels
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn-open" onclick="showSmConfigView('Winter 2025 Phase 1')">→ Open</button>
+                </div>
+            </div>
+
+            <!-- VIEW 2: Create New Season -->
+            <div id="sm-create-view" style="display:none">
+                <a class="sm-back-link" onclick="showSmListView()">
+                    <span class="material-icons-outlined" style="font-size:16px">arrow_back</span> Back to Seasons
+                </a>
+
+                <div class="sm-config-layout">
+                    <!-- Form Card -->
+                    <div class="sm-form-card">
+                        <div class="sm-form-header">
+                            <div class="sm-form-title">Create New Season</div>
+                            <button class="btn-primary">Create Season</button>
+                        </div>
+
+                        <div class="sm-form-row">
+                            <div>
+                                <div class="sm-form-field">
+                                    <label>Season Label</label>
+                                    <input type="text" placeholder="Summer 2026 Block 2" value="Summer 2026 Block 2">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="sm-form-field">
+                                    <label>Season Key</label>
+                                    <input type="text" placeholder="summer-2026-block-2" value="summer-2026-block-2">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sm-form-field">
+                            <label>Registration Window</label>
+                            <div class="sm-date-range">
+                                <input type="text" placeholder="Start date">
+                                <span class="sep">→</span>
+                                <input type="text" placeholder="End date">
+                                <span class="material-icons-outlined cal-icon">calendar_today</span>
+                            </div>
+                        </div>
+
+                        <div class="sm-form-field">
+                            <label>Summer Access Window</label>
+                            <div class="sm-date-range">
+                                <input type="text" placeholder="Start date">
+                                <span class="sep">→</span>
+                                <input type="text" placeholder="End date">
+                                <span class="material-icons-outlined cal-icon">calendar_today</span>
+                            </div>
+                            <div class="sm-field-hint">This date range cannot overlap with any other saved summer mess season.</div>
+                        </div>
+
+                        <div class="sm-form-field">
+                            <label>Rate Per Day (INR)</label>
+                            <input type="text" value="0" style="width: 260px;">
+                        </div>
+
+                        <div class="sm-form-field">
+                            <label>Participating Hostels</label>
+                            <select>
+                                <option value="" disabled selected>Select hostels whose caterers are serving during this summer season</option>
+                                <option>Barak</option>
+                                <option>Brahmaputra</option>
+                                <option>Disang</option>
+                                <option>Kameng</option>
+                                <option>Lohit</option>
+                            </select>
+                            <div class="sm-field-hint">Leave a hostel out if its caterer is closed for this season. Students will not be able to apply there.</div>
+                        </div>
+                    </div>
+
+                    <!-- Operations Card -->
+                    <div class="sm-ops-card">
+                        <div class="sm-ops-title">Operations</div>
+                        <div class="sm-ops-row">
+                            <span class="sm-ops-label">Selected Registration</span>
+                            <span class="sm-ops-badge">
+                                <span class="material-icons-outlined">block</span> Closed
+                            </span>
+                        </div>
+                        <div class="sm-ops-row">
+                            <span class="sm-ops-label">Selected Summer</span>
+                            <span class="sm-ops-badge">
+                                <span class="material-icons-outlined">block</span> Inactive
+                            </span>
+                        </div>
+                        <div class="sm-ops-section">
+                            <div class="sm-ops-sublabel">Registration Window</div>
+                            <div class="sm-ops-subval">Not set to Not set</div>
+                        </div>
+                        <div class="sm-ops-section">
+                            <div class="sm-ops-sublabel">Summer Window</div>
+                            <div class="sm-ops-subval">Not set to Not set</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 3: Open Season Configuration & Applications -->
+            <div id="sm-config-view" style="display:none">
+                <a class="sm-back-link" onclick="showSmListView()">
+                    <span class="material-icons-outlined" style="font-size:16px">arrow_back</span> Back to Seasons
+                </a>
+
+                <div class="sm-config-layout">
+                    <!-- Form Card -->
+                    <div class="sm-form-card">
+                        <div class="sm-form-header">
+                            <div class="sm-form-title">Season Configuration</div>
+                            <div class="sm-form-actions">
+                                <button class="btn-danger-outline">Delete Season</button>
+                                <button class="btn-primary">Save Settings</button>
+                            </div>
+                        </div>
+
+                        <div class="sm-form-row">
+                            <div>
+                                <div class="sm-form-field">
+                                    <label>Season Label</label>
+                                    <input type="text" id="sm-cfg-label" value="Summer 2026 Phase 2">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="sm-form-field">
+                                    <label>Season Key</label>
+                                    <input type="text" id="sm-cfg-key" value="summer-2026-p2">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sm-form-field">
+                            <label>Registration Window</label>
+                            <div class="sm-date-range">
+                                <input type="text" value="12 Jun 2026 09:00 AM">
+                                <span class="sep">→</span>
+                                <input type="text" value="16 Jun 2026 09:00 PM">
+                                <span class="material-icons-outlined cal-icon">calendar_today</span>
+                            </div>
+                        </div>
+
+                        <div class="sm-form-field">
+                            <label>Summer Access Window</label>
+                            <div class="sm-date-range">
+                                <input type="text" value="15 Jun 2026 12:01 AM">
+                                <span class="sep">→</span>
+                                <input type="text" value="15 Jul 2026 11:59 PM">
+                                <span class="material-icons-outlined cal-icon">calendar_today</span>
+                            </div>
+                            <div class="sm-field-hint">This date range cannot overlap with any other saved summer mess season.</div>
+                        </div>
+
+                        <div class="sm-form-field">
+                            <label>Rate Per Day (INR)</label>
+                            <input type="text" value="140" style="width: 260px;">
+                        </div>
+
+                        <div class="sm-form-field">
+                            <label>Participating Hostels</label>
+                            <div class="sm-tags-container">
+                                <span class="sm-tag-item">Barak <span class="close">×</span></span>
+                                <span class="sm-tag-item">Disang <span class="close">×</span></span>
+                                <span class="sm-tag-item">Brahmaputra <span class="close">×</span></span>
+                            </div>
+                            <div class="sm-field-hint">Leave a hostel out if its caterer is closed for this season. Students will not be able to apply there.</div>
+                        </div>
+                    </div>
+
+                    <!-- Operations Card -->
+                    <div class="sm-ops-card">
+                        <div class="sm-ops-title">Operations</div>
+                        <div class="sm-ops-row">
+                            <span class="sm-ops-label">Selected Registration</span>
+                            <span class="sm-ops-badge">
+                                <span class="material-icons-outlined">block</span> Closed
+                            </span>
+                        </div>
+                        <div class="sm-ops-row">
+                            <span class="sm-ops-label">Selected Summer</span>
+                            <span class="sm-ops-badge">
+                                <span class="material-icons-outlined">block</span> Inactive
+                            </span>
+                        </div>
+                        <div class="sm-ops-section">
+                            <div class="sm-ops-sublabel">Registration Window</div>
+                            <div class="sm-ops-subval">12 Jun 2026, 09:00 AM to 16 Jun 2026, 09:00 PM</div>
+                        </div>
+                        <div class="sm-ops-section">
+                            <div class="sm-ops-sublabel">Summer Window</div>
+                            <div class="sm-ops-subval">15 Jun 2026, 12:01 AM to 15 Jul 2026, 11:59 PM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Season Applications Card -->
+                <div class="sm-apps-card">
+                    <div class="sm-apps-header">
+                        <div class="sm-apps-title">Season Applications</div>
+                        <button class="btn-outline" onclick="handleRefresh(this, 'Applications')">
+                            <span class="material-icons-outlined" style="font-size:16px">refresh</span>
+                            Refresh
+                        </button>
+                    </div>
+
+                    <div class="sm-apps-filter">
+                        <label>Filter by Hostel</label>
+                        <select>
+                            <option value="" selected>Select a hostel to filter applications</option>
+                            <option>Barak</option>
+                            <option>Brahmaputra</option>
+                            <option>Disang</option>
+                        </select>
+                    </div>
+
+                    <div class="sm-apps-grid">
+                        <!-- Pending Applications -->
+                        <div class="sm-app-panel">
+                            <div class="sm-app-panel-header">
+                                <span class="material-icons-outlined" style="color:#f59e0b;font-size:18px">schedule</span>
+                                Pending Applications
+                            </div>
+                            <div class="sm-app-count pending">43</div>
+
+                            <table style="font-size:12.5px;">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Roll Number</th>
+                                        <th>Hostel</th>
+                                        <th>Applied At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>LAKHI NARAYAN BHARADWAJ</td>
+                                        <td>206141008</td>
+                                        <td>Barak</td>
+                                        <td>16 Jun 2026, 08:59 PM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PANKAJ KUMAR</td>
+                                        <td>196151011</td>
+                                        <td>Barak</td>
+                                        <td>16 Jun 2026, 08:34 PM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>SHILPA NANDI</td>
+                                        <td>216152106</td>
+                                        <td>Disang</td>
+                                        <td>16 Jun 2026, 08:07 PM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>HRISHIKESH KUMAR BARUAH</td>
+                                        <td>256102102</td>
+                                        <td>Disang</td>
+                                        <td>16 Jun 2026, 07:56 PM</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Acknowledged Applications -->
+                        <div class="sm-app-panel">
+                            <div class="sm-app-panel-header">
+                                <span class="material-icons-outlined" style="color:#84cc16;font-size:18px">check_circle_outline</span>
+                                Acknowledged Applications
+                            </div>
+                            <div class="sm-app-count ack">0</div>
+
+                            <table style="font-size:12.5px;">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Roll Number</th>
+                                        <th>Hostel</th>
+                                        <th>Applied At</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="sm-empty-box">
+                                <span class="material-icons-outlined">inventory_2</span>
+                                <div>No data</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PAGE: GALA DINNER                           -->
+        <!-- ════════════════════════════════════════════ -->
+        <div id="page-galadinner" class="page-section">
+            <div class="page-header">
+                <h1 class="page-title">Gala Dinners</h1>
+            </div>
+
+            <div class="gd-layout">
+                <!-- Schedule Form -->
+                <div class="gd-form-card">
+                    <div class="gd-form-title">Schedule New Gala Dinner</div>
+                    <div class="gd-field">
+                        <label>Date</label>
+                        <input type="date" id="gd-date" placeholder="Select date">
+                    </div>
+                    <div class="gd-field">
+                        <label>Hostels (gala on this date)</label>
+                        <select id="gd-hostel">
+                            <option value="" disabled selected>Select hostels</option>
+                            <option>Barak</option>
+                            <option>Brahmaputra</option>
+                            <option>Kameng</option>
+                            <option>Lohit</option>
+                            <option>Umiam</option>
+                            <option>Disang</option>
+                            <option>Kapili</option>
+                            <option>Manas</option>
+                        </select>
+                    </div>
+                    <div class="gd-field">
+                        <label>Starters Start Time</label>
+                        <input type="time" id="gd-starters" placeholder="Starters at">
+                    </div>
+                    <div class="gd-field">
+                        <label>Dinner Start Time</label>
+                        <input type="time" id="gd-dinner" placeholder="Dinner at">
+                    </div>
+                    <button class="gd-schedule-btn" style="cursor:pointer;background:#4C4EDB;color:#fff;" onclick="scheduleGalaDinner()">+ Schedule Gala Dinner</button>
+                </div>
+
+                <!-- All Gala Dinners Table -->
+                <div class="gd-table-card">
+                    <div class="gd-table-header">
+                        <div class="gd-table-title">All Gala Dinners</div>
+                        <div class="gd-search">
+                            <input type="text" placeholder="Search by date...">
+                            <button><span class="material-icons-outlined">search</span></button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gd-table-body">
+                            <tr>
+                                <td>26 Apr 2026</td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a>
+                                    <a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>25 Apr 2026</td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a>
+                                    <a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>24 Apr 2026</td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a>
+                                    <a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>22 Apr 2026</td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a>
+                                    <a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>07 Mar 2026</td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a>
+                                    <a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>15 Feb 2026</td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a>
+                                    <a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>26 Jan 2026</td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a>
+                                    <a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>25 Dec 2025</td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a>
+                                    <a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>14 Nov 2025</td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a>
+                                    <a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>15 Aug 2025</td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a>
+                                    <a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="gd-pagination">
+                        <span id="gd-total-count">Total 10 events</span>
+                        <button class="gd-page-btn">&lt;</button>
+                        <button class="gd-page-btn active">1</button>
+                        <button class="gd-page-btn">&gt;</button>
+                        <select class="gd-page-select">
+                            <option>10 / page</option>
+                            <option>20 / page</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PAGE: SEND NOTIFICATIONS                    -->
+        <!-- ════════════════════════════════════════════ -->
+        <div id="page-notifications" class="page-section">
+            <div class="page-header">
+                <h1 class="page-title">Send Notifications</h1>
+            </div>
+
+            <div class="notif-layout">
+                <!-- Compose Message -->
+                <div class="notif-card">
+                    <div class="notif-card-title">
+                        <span class="material-icons-outlined">send</span>
+                        Compose Message
+                    </div>
+                    <div class="notif-field">
+                        <label>Title</label>
+                        <input type="text" id="notif-title" placeholder="Notification title">
+                    </div>
+                    <div class="notif-field">
+                        <label>Body</label>
+                        <textarea id="notif-body" placeholder="Notification message"></textarea>
+                    </div>
+                    <label class="notif-checkbox">
+                        <input type="checkbox" id="notif-alert">
+                        Send as Alert (urgent notification)
+                    </label>
+                </div>
+
+                <!-- Target Audience -->
+                <div class="notif-card">
+                    <div class="notif-card-title">Target Audience</div>
+                    <div class="notif-field">
+                        <label>Send To</label>
+                        <select id="notif-target">
+                            <option>All Hostels</option>
+                            <option>Barak</option>
+                            <option>Brahmaputra</option>
+                            <option>Kameng</option>
+                            <option>Lohit</option>
+                        </select>
+                    </div>
+                    <div class="notif-field">
+                        <label>User Type</label>
+                        <select id="notif-user-type">
+                            <option>Boarders</option>
+                            <option>All Users</option>
+                        </select>
+                    </div>
+                    <button class="btn-send" onclick="sendNotification()">
+                        <span class="material-icons-outlined" style="font-size:16px">send</span>
+                        Send Notification
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Mobile Navigation Drawer Toggle Functions
+        function toggleMobileNav() {
+            var sidebar = document.getElementById('appSidebar');
+            var icon = document.getElementById('mobileToggleIcon');
+            if (sidebar) {
+                sidebar.classList.toggle('mobile-open');
+                if (icon) {
+                    icon.textContent = sidebar.classList.contains('mobile-open') ? 'close' : 'menu';
+                }
+            }
+        }
+
+        function closeMobileNav() {
+            var sidebar = document.getElementById('appSidebar');
+            var icon = document.getElementById('mobileToggleIcon');
+            if (sidebar) {
+                sidebar.classList.remove('mobile-open');
+                if (icon) icon.textContent = 'menu';
+            }
+        }
+
+        function switchPage(pageName) {
+            closeMobileNav();
+            document.querySelectorAll('.page-section').forEach(function(section) {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                item.classList.remove('active');
+            });
+            var page = document.getElementById('page-' + pageName);
+            if (page) page.classList.add('active');
+            var navItem = document.querySelector('.nav-item[data-page="' + pageName + '"]');
+            if (navItem) navItem.classList.add('active');
+
+            // Reset caterer detail & summer mess when navigating away
+            if (pageName !== 'caterers') {
+                closeCatererDetail();
+            }
+            if (pageName !== 'summermess') {
+                showSmListView();
+            }
+
+            var titles = {
+                'home': 'Home - IIT Guwahati',
+                'hostels': 'Hostels - IIT Guwahati',
+                'caterers': 'Caterers - IIT Guwahati',
+                'students': 'Students - IIT Guwahati',
+                'allocations': 'Hostel Allocations - IIT Guwahati',
+                'bills': 'Bills - IIT Guwahati',
+                'messchange': 'Mess Change - IIT Guwahati',
+                'summermess': 'Summer Mess - IIT Guwahati',
+                'galadinner': 'Gala Dinner - IIT Guwahati',
+                'notifications': 'Send Notifications - IIT Guwahati'
+            };
+            document.title = titles[pageName] || 'IIT Guwahati - Hostel Affairs Board';
+        }
+
+        // Caterer detail view
+        var catererData = [
+            { name: 'M/S - Dulal Sen', rating: '3.99', rank: '1', feedbacks: '2' },
+            { name: 'Navi Harish Hospitality Pvt Ltd', rating: '3.00', rank: '2', feedbacks: '2' },
+            { name: 'Food Sutra Art of Spice Pvt Ltd', rating: '3.00', rank: '3', feedbacks: '1' },
+            { name: 'Aditya Caterers', rating: '3.00', rank: '4', feedbacks: '7' },
+            { name: 'Sugandhim Food & Catering Pvt. Lt', rating: '3.00', rank: '5', feedbacks: '3' },
+            { name: 'Nyasha Enterprise', rating: '3.00', rank: '6', feedbacks: '2' },
+            { name: 'Ideal Catering Services', rating: '3.00', rank: '7', feedbacks: '5' },
+            { name: 'Aay Pee Trading', rating: '2.99', rank: '8', feedbacks: '1' },
+            { name: 'Sheela Caterers', rating: '2.99', rank: '9', feedbacks: '2' },
+            { name: 'Delicious Catering', rating: '2.99', rank: '10', feedbacks: '3' },
+            { name: 'M/s. Anusha Hospitality Services', rating: '2.99', rank: '11', feedbacks: '14' },
+            { name: 'Shakthis Kitchen', rating: '2.98', rank: '12', feedbacks: '4' },
+            { name: 'Vidya Caterers', rating: '2.95', rank: '13', feedbacks: '3' }
+        ];
+
+        function openCatererDetail(index) {
+            var data = catererData[index];
+            if (!data) return;
+            document.getElementById('cd-caterer-name').textContent = data.name;
+            document.getElementById('cd-rating').innerHTML = data.rating + ' <span>/ 5.0</span>';
+            document.getElementById('cd-rank').textContent = data.rank;
+            document.getElementById('cd-feedbacks').textContent = data.feedbacks;
+
+            document.getElementById('caterer-list').classList.add('hidden');
+            document.getElementById('caterer-detail').classList.add('active');
+            switchCatererTab('info');
+        }
+
+        function closeCatererDetail() {
+            document.getElementById('caterer-list').classList.remove('hidden');
+            document.getElementById('caterer-detail').classList.remove('active');
+        }
+
+        function switchCatererTab(tab) {
+            document.querySelectorAll('.cd-tab').forEach(function(t) { t.classList.remove('active'); });
+            document.querySelectorAll('.cd-tab-content').forEach(function(c) { c.classList.remove('active'); });
+            document.querySelector('.cd-tab-content#cd-tab-' + tab).classList.add('active');
+            var tabs = document.querySelectorAll('.cd-tab');
+            var tabMap = { 'info': 0, 'menu': 1, 'feedbacks': 2 };
+            if (tabs[tabMap[tab]]) tabs[tabMap[tab]].classList.add('active');
+        }
+
+        // Refresh Handler
+        function handleRefresh(btn, sectionName) {
+            sectionName = sectionName || 'page';
+            var icon = btn ? btn.querySelector('.material-icons-outlined') : null;
+            var target = icon || btn;
+            if (target) target.classList.add('spinning');
+
+            setTimeout(function() {
+                if (target) target.classList.remove('spinning');
+                showToast('Refreshed ' + sectionName + ' data successfully!');
+            }, 600);
+        }
+
+        // Global Toast Notification
+        function showToast(msg, type) {
+            type = type || 'success';
+            var toast = document.createElement('div');
+            toast.className = 'app-toast ' + type;
+            toast.innerHTML = (type === 'success' ? '<span class="material-icons-outlined">check_circle</span>' : '<span class="material-icons-outlined">info</span>') + ' ' + msg;
+            document.body.appendChild(toast);
+            setTimeout(function() { toast.classList.add('show'); }, 10);
+            setTimeout(function() {
+                toast.classList.remove('show');
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 3000);
+        }
+
+        // Summer Mess View & Action Functions
+        var activeSummerCard = null;
+
+        function showSmListView() {
+            document.getElementById('sm-list-view').style.display = 'block';
+            document.getElementById('sm-create-view').style.display = 'none';
+            document.getElementById('sm-config-view').style.display = 'none';
+        }
+
+        function showSmCreateView() {
+            document.getElementById('sm-list-view').style.display = 'none';
+            document.getElementById('sm-create-view').style.display = 'block';
+            document.getElementById('sm-config-view').style.display = 'none';
+        }
+
+        function showSmConfigView(seasonName, cardElem) {
+            if (cardElem) {
+                activeSummerCard = cardElem.closest('.sm-season-card');
+            } else {
+                // Find card matching seasonName
+                var cards = document.querySelectorAll('.sm-season-card');
+                cards.forEach(function(c) {
+                    if (c.querySelector('.sm-season-name').textContent.includes(seasonName)) {
+                        activeSummerCard = c;
+                    }
+                });
+            }
+
+            document.getElementById('sm-list-view').style.display = 'none';
+            document.getElementById('sm-create-view').style.display = 'none';
+            document.getElementById('sm-config-view').style.display = 'block';
+
+            if (seasonName) {
+                var labelElem = document.getElementById('sm-cfg-label');
+                var keyElem = document.getElementById('sm-cfg-key');
+                if (labelElem) labelElem.value = seasonName;
+                if (keyElem) keyElem.value = seasonName.toLowerCase().replace(/\s+/g, '-');
+            }
+        }
+
+        function createSummerSeason() {
+            var labelInput = document.querySelector('#sm-create-view input[placeholder*="Summer"]');
+            var label = labelInput ? labelInput.value.trim() : 'New Summer Season';
+            if (!label) label = 'New Summer Season';
+
+            var container = document.querySelector('#sm-list-view .sm-section-title');
+            var card = document.createElement('div');
+            card.className = 'sm-season-card';
+            card.innerHTML = '<div>' +
+                '<div class="sm-season-name">' + label + ' <span class="sm-idle-badge">Idle</span></div>' +
+                '<div class="sm-season-meta">' +
+                    '<span class="sm-meta-item reg"><span class="material-icons-outlined">event</span> Registration: Configured</span>' +
+                    '<span class="sm-meta-item summer"><span class="material-icons-outlined">schedule</span> Summer: Configured</span>' +
+                    '<span class="sm-meta-item hostels"><span class="material-icons-outlined">groups</span> Participating hostels</span>' +
+                '</div>' +
+            '</div>' +
+            '<button class="btn-open" onclick="showSmConfigView(\'' + label + '\', this)">→ Open</button>';
+
+            container.parentNode.insertBefore(card, container.nextSibling);
+            showToast('Season "' + label + '" created successfully!');
+            showSmListView();
+        }
+
+        function deleteSummerSeason() {
+            if (activeSummerCard) {
+                activeSummerCard.remove();
+                activeSummerCard = null;
+                showToast('Season deleted successfully!', 'error');
+            } else {
+                var firstCard = document.querySelector('.sm-season-card');
+                if (firstCard) firstCard.remove();
+                showToast('Season deleted successfully!', 'error');
+            }
+            showSmListView();
+        }
+
+        function saveSummerSeason() {
+            var labelElem = document.getElementById('sm-cfg-label');
+            var label = labelElem ? labelElem.value.trim() : 'Season';
+            if (activeSummerCard) {
+                var nameDiv = activeSummerCard.querySelector('.sm-season-name');
+                if (nameDiv) {
+                    nameDiv.innerHTML = label + ' <span class="sm-idle-badge">Idle</span>';
+                }
+            }
+            showToast('Season settings saved!');
+            showSmListView();
+        }
+
+        // Gala Dinner Functions
+        function scheduleGalaDinner() {
+            var dateVal = document.getElementById('gd-date').value;
+            var hostelVal = document.getElementById('gd-hostel').value;
+            var startersVal = document.getElementById('gd-starters').value;
+            var dinnerVal = document.getElementById('gd-dinner').value;
+
+            if (!dateVal) {
+                showToast('Please select a date for the Gala Dinner', 'error');
+                return;
+            }
+
+            var tbody = document.getElementById('gd-table-body');
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + dateVal + '</td>' +
+                '<td><span style="color:#22c55e;font-weight:500">Scheduled</span></td>' +
+                '<td>' +
+                    '<a class="action-view" href="#" onclick="viewGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">visibility</span> View</a> ' +
+                    '<a class="action-clear" href="#" onclick="clearGalaDinner(this);return false;"><span class="material-icons-outlined" style="font-size:14px">delete_outline</span> Clear</a>' +
+                '</td>';
+            tbody.insertBefore(tr, tbody.firstChild);
+
+            // Update total count
+            var countElem = document.getElementById('gd-total-count');
+            if (countElem) {
+                var current = tbody.children.length;
+                countElem.textContent = 'Total ' + current + ' events';
+            }
+
+            showToast('Gala Dinner scheduled for ' + dateVal + '!');
+        }
+
+        function clearGalaDinner(link) {
+            var tr = link.closest('tr');
+            if (tr) {
+                tr.style.transition = 'all 0.3s ease';
+                tr.style.opacity = '0';
+                setTimeout(function() {
+                    tr.remove();
+                    var tbody = document.getElementById('gd-table-body');
+                    var countElem = document.getElementById('gd-total-count');
+                    if (countElem && tbody) {
+                        countElem.textContent = 'Total ' + tbody.children.length + ' events';
+                    }
+                }, 300);
+            }
+            showToast('Gala Dinner event cleared!', 'error');
+        }
+
+        function viewGalaDinner(link) {
+            var tr = link.closest('tr');
+            var dateStr = tr ? tr.children[0].textContent : 'Event';
+            showToast('Viewing Gala Dinner details for ' + dateStr);
+        }
+
+        // Hostel Allocations Functions
+        function saveAllocation() {
+            var roll = document.getElementById('alloc-roll').value.trim();
+            var hostel = document.getElementById('alloc-hostel').value;
+            var mess = document.getElementById('alloc-mess').value.trim() || hostel;
+            var email = document.getElementById('alloc-email').value.trim();
+
+            if (!roll) {
+                showToast('Please enter a Roll Number', 'error');
+                return;
+            }
+            if (!hostel) {
+                showToast('Please select a Hostel', 'error');
+                return;
+            }
+
+            var tbody = document.getElementById('alloc-table-body');
+            var existingRow = null;
+
+            // Search for existing roll no row
+            tbody.querySelectorAll('tr').forEach(function(r) {
+                if (r.children[0].textContent.trim() === roll) {
+                    existingRow = r;
+                }
+            });
+
+            var emailTd = email ? email : '<span class="not-set">Not set</span>';
+
+            if (existingRow) {
+                existingRow.children[1].textContent = hostel;
+                existingRow.children[2].textContent = mess;
+                existingRow.children[3].innerHTML = emailTd;
+                showToast('Updated allocation for Roll ' + roll);
+            } else {
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td style="font-weight:600;color:#111827">' + roll + '</td>' +
+                    '<td>' + hostel + '</td>' +
+                    '<td>' + mess + '</td>' +
+                    '<td>' + emailTd + '</td>' +
+                    '<td class="actions-col"><a class="edit-link" href="#" onclick="editAllocation(this);return false;">Edit</a></td>';
+                tbody.insertBefore(tr, tbody.firstChild);
+                showToast('Added allocation for Roll ' + roll);
+            }
+
+            // Reset inputs
+            document.getElementById('alloc-roll').value = '';
+            document.getElementById('alloc-mess').value = '';
+            document.getElementById('alloc-email').value = '';
+        }
+
+        function editAllocation(link) {
+            var tr = link.closest('tr');
+            if (!tr) return;
+            var roll = tr.children[0].textContent.trim();
+            var hostel = tr.children[1].textContent.trim();
+            var mess = tr.children[2].textContent.trim();
+            var email = tr.children[3].textContent.trim();
+
+            document.getElementById('alloc-roll').value = roll;
+            document.getElementById('alloc-mess').value = mess;
+            document.getElementById('alloc-email').value = (email !== 'Not set') ? email : '';
+
+            var select = document.getElementById('alloc-hostel');
+            for (var i = 0; i < select.options.length; i++) {
+                if (select.options[i].text.toLowerCase() === hostel.toLowerCase()) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast('Editing allocation for Roll ' + roll);
+        }
+
+        // Add Caterer Modal Function
+        function createNewCaterer() {
+            var modal = document.getElementById('addCatererModal');
+            var inputs = modal.querySelectorAll('input');
+            var select = modal.querySelector('select');
+            var name = inputs[0] ? inputs[0].value.trim() : '';
+            var hostel = select ? select.value : '';
+
+            if (!name) {
+                showToast('Please enter a Caterer Name', 'error');
+                return;
+            }
+
+            var tbody = document.getElementById('caterer-table-body');
+            var count = tbody.children.length + 1;
+
+            var tr = document.createElement('tr');
+            tr.style.cursor = 'pointer';
+            tr.innerHTML = '<td><button class="expand-btn">+</button></td>' +
+                '<td><span class="rank-num">' + count + '</span></td>' +
+                '<td><div class="caterer-name">' + name + '</div><div class="caterer-hostel">' + (hostel || 'Hostel') + '</div></td>' +
+                '<td>0</td>' +
+                '<td>-</td>' +
+                '<td>0</td>' +
+                '<td>3.00</td>';
+
+            catererData.push({ name: name, rating: '3.00', rank: '' + count, feedbacks: '0' });
+            var newIndex = catererData.length - 1;
+            tr.addEventListener('click', function() { openCatererDetail(newIndex); });
+            tbody.appendChild(tr);
+
+            // Update meta count
+            var totalElem = document.querySelector('.caterers-meta .total');
+            if (totalElem) totalElem.textContent = 'Total: ' + count + ' caterers';
+
+            modal.classList.remove('active');
+            inputs[0].value = '';
+            showToast('Caterer "' + name + '" added successfully!');
+        }
+
+        // Send Notifications Function
+        function sendNotification() {
+            var title = document.getElementById('notif-title').value.trim();
+            var body = document.getElementById('notif-body').value.trim();
+
+            if (!title) {
+                showToast('Please enter a Notification title', 'error');
+                return;
+            }
+
+            showToast('Notification sent successfully!');
+            document.getElementById('notif-title').value = '';
+            document.getElementById('notif-body').value = '';
+        }
+
+        // Make caterer rows clickable
+        document.addEventListener('DOMContentLoaded', function() {
+            var rows = document.querySelectorAll('#caterer-table-body tr');
+            rows.forEach(function(row, i) {
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', function() { openCatererDetail(i); });
+            });
+        });
+    </script>
+    <!-- Add Caterer Modal -->
+    <div id="addCatererModal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('active')">
+        <div class="modal-card">
+            <div class="modal-title">Add New Caterer</div>
+            <div class="modal-field">
+                <label>Caterer Name</label>
+                <input type="text" placeholder="Caterer Name">
+            </div>
+            <div class="modal-field">
+                <label>Hostel Name</label>
+                <select>
+                    <option value="" disabled selected>Select Hostel</option>
+                    <option>Barak</option>
+                    <option>Brahmaputra</option>
+                    <option>Dhansiri</option>
+                    <option>Dihing</option>
+                    <option>Disang</option>
+                    <option>Gaurang</option>
+                    <option>Kameng</option>
+                    <option>Kapili</option>
+                    <option>Lohit</option>
+                    <option>Manas</option>
+                    <option>Siang</option>
+                    <option>Subansiri</option>
+                    <option>Umiam</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn create">Create</button>
+                <button class="modal-btn cancel" onclick="document.getElementById('addCatererModal').classList.remove('active')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

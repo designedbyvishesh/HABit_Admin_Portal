@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 13f</title>
+    <style>
+        p{
+            font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 16px; 
+            margin: 0px;
+        }
+        .block{
+            display: flex;
+            flex-direction: row;
+            max-width: 420px;
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+        .dp{
+            width: 54px;
+            height: 54px;
+            object-fit: cover;
+            border-radius: 27px;
+        }
+        .info{
+            display: flex;
+            flex-direction: column;
+            margin-left: 12px;
+        }
+        .channel-name{
+            display: flex;
+            flex-direction: row;
+        }
+        .all-message{
+            line-height: 20px;
+            margin-bottom: 12px;
+        }
+        .link{
+            display: flex;
+            flex-direction: row;
+            border: solid;
+            border-width: 1px;
+            border-color: gray;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .image{
+            width: 84px;
+            background: gray;
+        }
+        .name{
+            font-weight: 700;
+            padding-right: 8px;
+        }
+        .tag, .link-name{
+            color: gray;
+        }
+        .link-text{
+            display: flex;
+            flex-direction: column;
+            padding-top: 12px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-bottom: 12px;
+        }
+
+    </style>
+</head>
+<body>
+   <div class="block">
+    <div class="profile">
+        <img class="dp" src="Div/cat2.jpg">
+    </div>
+    <div class="info">
+        <div class="channel-name">
+            <p class="name">supersimple.dev</p>
+            <p class="tag">@SuperSimpleDev</p>
+        </div>
+        <div class="all-message">
+            <p class="msg"> What is backend web development? A complete overview. New video is up!</p>
+        </div>
+        <div class="link">
+            <div class="image"></div>
+            <div class="link-text">
+                <p class="link-name">youtube.com</p>
+                <p class="about"> Backend web develompent - a complete overview (2021)</p>
+            </div>
+        </div>
+    </div>
+   </div>
+</body>
+</html>
