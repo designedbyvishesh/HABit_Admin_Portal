@@ -6,7 +6,7 @@ An intuitive and comprehensive administration portal for managing hostel operati
 
 ---
 
-## 📸 Portal Preview & Screenshots
+## Portal Preview & Screenshots
 
 ### 1. Hostels Management & Overview
 Comprehensive breakdown of all IIT Guwahati hostels (Barak, Brahmaputra, Dhansiri, Dihing, Disang, Gaurang, Kameng, Kapili, Lohit, Manas, Siang, Subansiri, Umiam), boarder counts, capacity limits, allocated caterers, and contact details.
@@ -50,19 +50,19 @@ Send targeted alerts and announcements to boarders and specific hostels.
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-- 🏢 **Hostel Administration:** Track capacity, active boarders, and assigned caterers.
-- 🍽️ **Catering & Feedback System:** View caterer performance scores and student feedback.
-- 🛏️ **Allocations & Room Management:** Manage room assignments and view occupancy rates.
-- 🔍 **Student Database:** Search student details by Roll Number or Name.
-- 🍛 **Special Events & Gala Dinner:** Live food QR scan tracking and serving schedule.
-- 📢 **Broadcast Announcements:** Send priority alerts to individual hostels or campus-wide.
-- 📱 **Responsive UI:** Optimized for both desktop and mobile viewing.
+- **Hostel Administration:** Track capacity, active boarders, and assigned caterers.
+- **Catering & Feedback System:** View caterer performance scores and student feedback.
+- **Allocations & Room Management:** Manage room assignments and view occupancy rates.
+- **Student Database:** Search student details by Roll Number or Name.
+- **Special Events & Gala Dinner:** Live food QR scan tracking and serving schedule.
+- **Broadcast Announcements:** Send priority alerts to individual hostels or campus-wide.
+- **Responsive UI:** Optimized for both desktop and mobile viewing.
 
 ---
 
-## 🚀 Getting Started Locally
+## Getting Started Locally
 
 1. **Clone the repository:**
    ```bash
